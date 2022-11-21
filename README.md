@@ -8,7 +8,7 @@
 - Inside documents we use JSON (BJSON) data format
 - Documents allow us to create complex relashions between data and store them in one document
 
-<img width="301" alt="Screenshot 2022-11-21 105830" src="https://user-images.githubusercontent.com/77200870/203021271-c48a05ea-8462-4d41-92da-404df3bce979.png">
+<img width="301" alt="Screenshot 2022-11-21 105830" src="https://user-images.githubusercontent.com/77200870/203030556-525e9e36-3708-4d19-bcb8-6421d47610f4.png">
 
 ## Key mongoDB Characteristics
 
