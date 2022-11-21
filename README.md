@@ -61,4 +61,11 @@ even if the collection does not exist it will be created
 
 > db.collection_name.find().pretty()
 
+## Shell vs Drivers
+
+- The Shell is language-neutral
+- Drivers are ODMs we use to interact with mongoDB from our applications written in diffrent languages (NodeJS, Python...)
+
+[https://www.mongodb.com/docs/drivers/]
+
 
