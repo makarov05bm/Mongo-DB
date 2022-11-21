@@ -63,9 +63,14 @@ even if the collection does not exist it will be created
 
 ## Shell vs Drivers
 
+https://www.mongodb.com/docs/drivers/
+
 - The Shell is language-neutral
 - Drivers are ODMs we use to interact with mongoDB from our applications written in diffrent languages (NodeJS, Python...)
 
-[https://www.mongodb.com/docs/drivers/]
+## MongoDB + Clients the big picture
 
+<img width="547" alt="Screenshot 2022-11-21 115136" src="https://user-images.githubusercontent.com/77200870/203032720-1e524e3c-b784-426d-8ad1-f2d7e7e1291b.png">
+
+<img width="520" alt="Screenshot 2022-11-21 115322" src="https://user-images.githubusercontent.com/77200870/203032735-996357d3-d893-4af4-a4bb-50c68257b6d0.png">
 
