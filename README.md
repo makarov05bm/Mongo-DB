@@ -204,39 +204,14 @@ we pass an array of documents
     }
   }
 ]
-flights> db.allflights.find({"captain.name": "yakoub"})
-
-flights> db.allflights.find({"captain.name": "max"})
-[
-  {
-    _id: ObjectId("637bdf3779ed705cc635375a"),
-    departureAirport: 'MUC',
-    arrivalAirport: 'SFO',
-    aircraft: 'Airbus A380',
-    distance: 12000,
-    intercontinental: true,
-    captain: {
-      name: 'max',
-      age: 25,
-      hobbies: [ 'sports', 'coding', 'hacking' ]
-    }
-  },
-  {
-    _id: ObjectId("637bdf3779ed705cc635375b"),
-    departureAirport: 'LHR',
-    arrivalAirport: 'TXL',
-    aircraft: 'Airbus A320',
-    distance: 950,
-    intercontinental: false,
-    captain: {
-      name: 'max',
-      age: 25,
-      hobbies: [ 'sports', 'coding', 'hacking' ]
-    }
-  }
-]
 ```
 
 ### Accessing embedded documents
 
 > db.allflights.find({"captain.name": "max"})
+
+## Module Summary
+
+<img width="530" alt="Screenshot 2022-11-21 221655" src="https://user-images.githubusercontent.com/77200870/203159843-540c3a0a-9dad-4e41-9c05-63592d524b4b.png">
+
+
