@@ -156,3 +156,87 @@ we pass an array of documents
 **⚠️ find() and the Cursor**
 
 > find() in reality returns a cursor to the data, not an array, and the shell by default only displays us with the first 20 documents, but if we want more documents, we run the `toArray()` method on the cursor or instead and better, we use the `forEach((data) => {prindjson(data)}) method`
+
+## Projection
+
+<img width="461" alt="Screenshot 2022-11-21 215122" src="https://user-images.githubusercontent.com/77200870/203155826-4cdf4c12-fa20-42d6-b38a-3fb5a4cb24bc.png">
+
+> db.collection_name.find({}, {field1: 1, field2: 1})
+
+⚠️ This will return the _id of each document as well, so we have to explicitly exclude the _id
+
+> db.collection_name.find({}, {age: 19, _id: 0})
+
+## Embedded Documents
+
+<img width="526" alt="Screenshot 2022-11-21 215851" src="https://user-images.githubusercontent.com/77200870/203157035-66c3f22b-af56-458a-ba3e-c885ed97b867.png">
+
+<img width="538" alt="Screenshot 2022-11-21 215918" src="https://user-images.githubusercontent.com/77200870/203157105-a8c18f23-5b2d-4126-8ac2-9a178ee6a312.png"> 
+
+> db.allflights.updateMany({}, {$set: {captain: {name: "max", age: 25, hobbies: ["sports", "coding", "hacking"]}}
+
+```js
+[
+  {
+    _id: ObjectId("637bdf3779ed705cc635375a"),
+    departureAirport: 'MUC',
+    arrivalAirport: 'SFO',
+    aircraft: 'Airbus A380',
+    distance: 12000,
+    intercontinental: true,
+    captain: {
+      name: 'max',
+      age: 25,
+      hobbies: [ 'sports', 'coding', 'hacking' ]
+    }
+  },
+  {
+    _id: ObjectId("637bdf3779ed705cc635375b"),
+    departureAirport: 'LHR',
+    arrivalAirport: 'TXL',
+    aircraft: 'Airbus A320',
+    distance: 950,
+    intercontinental: false,
+    captain: {
+      name: 'max',
+      age: 25,
+      hobbies: [ 'sports', 'coding', 'hacking' ]
+    }
+  }
+]
+flights> db.allflights.find({"captain.name": "yakoub"})
+
+flights> db.allflights.find({"captain.name": "max"})
+[
+  {
+    _id: ObjectId("637bdf3779ed705cc635375a"),
+    departureAirport: 'MUC',
+    arrivalAirport: 'SFO',
+    aircraft: 'Airbus A380',
+    distance: 12000,
+    intercontinental: true,
+    captain: {
+      name: 'max',
+      age: 25,
+      hobbies: [ 'sports', 'coding', 'hacking' ]
+    }
+  },
+  {
+    _id: ObjectId("637bdf3779ed705cc635375b"),
+    departureAirport: 'LHR',
+    arrivalAirport: 'TXL',
+    aircraft: 'Airbus A320',
+    distance: 950,
+    intercontinental: false,
+    captain: {
+      name: 'max',
+      age: 25,
+      hobbies: [ 'sports', 'coding', 'hacking' ]
+    }
+  }
+]
+```
+
+### Accessing embedded documents
+
+> db.allflights.find({"captain.name": "max"})
