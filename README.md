@@ -1,4 +1,4 @@
-# Introduction
+# [01] Introduction
 
 ## Course Outline
 
@@ -82,7 +82,7 @@ https://www.mongodb.com/docs/drivers/
 
 -----------------------------------------------------------------------
 
-# Basics & Basic CRUD Operations
+# [02] Basics & Basic CRUD Operations
 
 - Basics about collections & documents
 - Basic data types
