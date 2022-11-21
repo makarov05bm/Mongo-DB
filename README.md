@@ -67,6 +67,10 @@ even if the collection does not exist it will be created
 
 > db.collection_name.find().pretty()
 
+#### Delete a collection
+
+> db.collection_name.deleteMany({})
+
 ## Shell vs Drivers
 
 https://www.mongodb.com/docs/drivers/
@@ -96,3 +100,55 @@ https://www.mongodb.com/docs/drivers/
 
 - This field is automatically assigned by mongoDB, but we can override it with any value we want
 - ObjectId is not a valid JSON data type, but mongoDB drivers convert it into a valid type in BSON format 
+
+## CRUD Operations
+
+<img width="531" alt="Screenshot 2022-11-21 211340" src="https://user-images.githubusercontent.com/77200870/203149804-a406500e-0115-4bfa-a446-e9e2eff5dc76.png">
+
+### Updation
+
+#### Update one document
+
+> db.collection_name.updateOne({name: "yakoub"}, {$set: {name: "inv"}})
+
+#### Update many documents
+
+> db.collection_name.updateMany({age: 19}, {$set: {canDrive: true}})
+
+#### Entirely replace the document
+
+After this the document will contain only the `_id` and `name` fields
+
+> db.collection_name.update({_id: ObjectId("3243fd4234r324545")}, {name: "Oussama"})
+
+*[!] A better approach:*
+
+> db.collection_name.replaceOne({_id: ObjectId("3243fd4234r324545")}, {name: "Oussama", age: 19})
+
+### Deleteion
+
+#### Delete one document
+
+> db.collection_name.deleteOne({name: "Oussama"})
+
+#### Delete many documents
+
+> db.collection_name.deleteMany({})
+
+### Insertion
+
+#### Insert many documents
+
+we pass an array of documents
+
+> db.collection_name.insertMany([{...}, {...}, ...])
+
+### Finding
+
+#### Return all matching elements
+
+> db.collection_name.find({distance: {$gt: 10000}}).pretty()
+
+#### Return the first matching element
+
+> db.collection_name.findOne({distance: {$gt: 10000}}).pretty()
