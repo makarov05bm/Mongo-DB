@@ -88,4 +88,7 @@ https://www.mongodb.com/docs/drivers/
 - Basic data types
 - Performing CRUD operations
 
+## JSON vs BSON
+
+<img width="540" alt="Screenshot 2022-11-21 122455" src="https://user-images.githubusercontent.com/77200870/203038752-42a1ec80-130c-4849-a548-9377f5ffcfe3.png">
 
