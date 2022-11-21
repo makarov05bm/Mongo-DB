@@ -121,7 +121,7 @@ After this the document will contain only the `_id` and `name` fields
 
 > db.collection_name.update({_id: ObjectId("3243fd4234r324545")}, {name: "Oussama"})
 
-*[!] A better approach:*
+**⚠️ A better approach:**
 
 > db.collection_name.replaceOne({_id: ObjectId("3243fd4234r324545")}, {name: "Oussama", age: 19})
 
@@ -152,3 +152,7 @@ we pass an array of documents
 #### Return the first matching element
 
 > db.collection_name.findOne({distance: {$gt: 10000}}).pretty()
+
+**⚠️ find() and the Cursor**
+
+> find() in reality returns a cursor to the data, not an array, and the shell by default only displays us with the first 20 documents, but if we want more documents, we run the `toArray()` method on the cursor or instead and better, we use the `forEach((data) => {prindjson(data)}) method`
