@@ -1,5 +1,9 @@
 # Mongo-DB
 
+## Course Outline
+
+<img width="548" alt="Screenshot 2022-11-21 115916" src="https://user-images.githubusercontent.com/77200870/203033899-7c69f02c-ea8e-446a-9d81-0c86a35efee4.png">
+
 ## What is mongoDB?
 
 <img width="431" alt="Screenshot 2022-11-21 105449" src="https://user-images.githubusercontent.com/77200870/203020754-abe64d92-6008-48fc-be58-8a360a5f0523.png">
