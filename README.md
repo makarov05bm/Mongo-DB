@@ -53,6 +53,12 @@
 
 > use db_name
 
+#### Delete a database
+
+> use db_name
+
+> db.dropDatabase()
+
 #### Insert a document into a collection 
 
 even if the collection does not exist it will be created
@@ -67,9 +73,19 @@ even if the collection does not exist it will be created
 
 > db.collection_name.find().pretty()
 
-#### Delete a collection
+#### Free a collection
 
 > db.collection_name.deleteMany({})
+
+#### Drop a collection
+
+> db.collection_name.drop()
+
+#### Get Statistics about the database
+
+> use db_name
+
+> db.stats()
 
 ## Shell vs Drivers
 
@@ -213,5 +229,92 @@ we pass an array of documents
 ## Module Summary
 
 <img width="530" alt="Screenshot 2022-11-21 221655" src="https://user-images.githubusercontent.com/77200870/203159843-540c3a0a-9dad-4e41-9c05-63592d524b4b.png">
+
+-------------------------------------------------------------------
+
+# [03] Schemas & Relations How to Structure Documents
+
+## What's In This Module
+
+- Understading Document Schemas & Data Types
+- Modelling Relashions
+- Schema Validation
+
+<img width="495" alt="Screenshot 2022-11-23 212122" src="https://user-images.githubusercontent.com/77200870/203639355-4203d68a-1313-4ecc-8a8a-41550ae12e8c.png">
+
+we can have these two documents in the same collection!
+
+```js
+  {
+    _id: ObjectId("637e80685a49faf9d87c5c59"),
+    name: 'book',
+    price: 12.99
+  },
+  {
+    _id: ObjectId("637e808d5a49faf9d87c5c5a"),
+    title: 't-shirt',
+    seller: { name: 'oussama', age: 20 }
+  }
+```
+
+> While it's not necessary to have a schema, it would be better to have one so that we work more effeciently with the data in the backend
+
+## Available Approaches do structure collections
+
+<img width="532" alt="Screenshot 2022-11-23 212554" src="https://user-images.githubusercontent.com/77200870/203640077-d685bde6-28b8-4c54-b261-268082733f5c.png">
+
+> The cases in the middle and on the right are the ones we see more often
+
+**⚠️ If we want to take a SQLish approach, we add the fields that are not common, in all the documents but if a document does not use it, we set it to `null`**
+
+## Data Types
+
+**⚠️ Max size of each document is 16MB**
+
+- Text: "Yacoub"
+- Boolean: true, false
+- Number
+  + Integer(int32)
+  + NumberInt()
+  + NumberLong(int64)
+  + NumberDecimal (high precision floating point number)
+- ObjectId
+- ISODate
+  + Timestamp
+- Embedded document
+- Arrays
+
+<img width="521" alt="Screenshot 2022-11-23 214216" src="https://user-images.githubusercontent.com/77200870/203642568-123d1d64-25fa-4bd4-a100-95b2635586da.png">
+
+**Eample:**
+
+```js
+db.company.insertOne({name: "Fresh Apples Inc", isStartup: true, employeesCount: 33, funding: 12345678901234567890, details: {ceo: "Mark"}, tags: [{title: "super"}, {title: "great"}], foundingDate: new Date(), insertedAt: new Timestamp()})
+```
+
+## Data Schemas & Data Modelling
+
+<img width="544" alt="Screenshot 2022-11-23 220612" src="https://user-images.githubusercontent.com/77200870/203646064-20cc1f9b-18eb-4805-b3a5-0800e46bf57e.png">
+
+## Relashios
+
+### Two tastes of relashions
+
+<img width="530" alt="Screenshot 2022-11-23 220852" src="https://user-images.githubusercontent.com/77200870/203646428-7af7fb32-7af8-4d90-a4d4-4b003055fb58.png">
+
+> If the data we want to refrence does not affect the document when changes, then we embed it, else we should only refrence it with the **id**
+
+#### Example #1: One To One Relashion
+
+**⚠️ Best Approach: Embedded refrenced document**
+
+**⚠️ An Application Driven Approach:** For example, we have `users` and `cars` which is refrenced through `car's id` in the users documents, if our application needs to display all cars and all users seperatly, then it will be a lot more efficient to split the two collections apart
+
+<img width="503" alt="Screenshot 2022-11-23 221144" src="https://user-images.githubusercontent.com/77200870/203646882-8e53f3cf-bc9f-402d-badd-3fc6111b83d2.png">
+
+
+
+
+
 
 
