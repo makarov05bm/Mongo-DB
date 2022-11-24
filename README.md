@@ -423,3 +423,109 @@ db.books.aggregate([
     ]
 }
 ```
+
+## Schema Validation
+
+<img width="363" alt="Screenshot 2022-11-24 210404" src="https://user-images.githubusercontent.com/77200870/203857455-9438c942-6fed-4166-b087-f5269e68937e.png">
+
+<img width="527" alt="Screenshot 2022-11-24 210542" src="https://user-images.githubusercontent.com/77200870/203857593-713781a7-267f-4615-b92f-8f35cb84c7d2.png">
+
+> db.createCollection(collection_name, {validation rules})
+
+### Adding Schema Validation When Creating the Collection
+
+```js
+db.createCollection("posts", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["title", "text", "writer", "comments"],
+            properties: {
+                title: {
+                    bsonType: "string",
+                    description: "muest be a string and is required"
+                },
+                text: {
+                    bsonType: "string",
+                    description: "must be a string and is required"
+                },
+                writer: {
+                    bsonType: "objectId",
+                    description: "must be an onjectId and is required"
+                },
+                comments: {
+                    bsonType: "array",
+                    description: "must be an array and is required",
+                    items: {
+                        bsonType: "object",
+                        required: ["text", "author"],
+                        properties: {
+                            text: {
+                                bsonType: "string",
+                                description: "must be a string and is required"
+                            },
+                            author: {
+                                bsonType: "objectId",
+                                description: "muest be an objectId and is required"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
+```
+
+### Adding Schema Validation After Creating the Collection
+
+> db.runCommand({collMod: "collection_name", validator: {validation schma}, validationAction: "error"||"warn"})
+
+**⚠️ When the `validationType` is set to `warn` then even if the document is not valid it gets inserted and a warning gets added to the file**
+
+```js
+db.runCommand({
+    collMod: "posts",
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: ["title", "text", "writer", "comments"],
+            properties: {
+                title: {
+                    bsonType: "string",
+                    description: "muest be a string and is required"
+                },
+                text: {
+                    bsonType: "string",
+                    description: "must be a string and is required"
+                },
+                writer: {
+                    bsonType: "objectId",
+                    description: "must be an onjectId and is required"
+                },
+                comments: {
+                    bsonType: "array",
+                    description: "must be an array and is required",
+                    items: {
+                        bsonType: "object",
+                        required: ["text", "author"],
+                        properties: {
+                            text: {
+                                bsonType: "string",
+                                description: "must be a string and is required"
+                            },
+                            author: {
+                                bsonType: "objectId",
+                                description: "muest be an objectId and is required"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    validationAction: "warn"
+})
+```
+
+
