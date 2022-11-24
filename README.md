@@ -296,9 +296,11 @@ db.company.insertOne({name: "Fresh Apples Inc", isStartup: true, employeesCount:
 
 <img width="544" alt="Screenshot 2022-11-23 220612" src="https://user-images.githubusercontent.com/77200870/203646064-20cc1f9b-18eb-4805-b3a5-0800e46bf57e.png">
 
-## Relashios
+## Relashions
 
 ### Two tastes of relashions
+
+<img width="530" alt="Screenshot 2022-11-24 184035" src="https://user-images.githubusercontent.com/77200870/203841907-85158926-4c3b-454d-80f2-75ce3ea5104f.png">
 
 <img width="530" alt="Screenshot 2022-11-23 220852" src="https://user-images.githubusercontent.com/77200870/203646428-7af7fb32-7af8-4d90-a4d4-4b003055fb58.png">
 
@@ -346,4 +348,78 @@ db.citizens.insertMany([{name: "oussama", age: 20, cityId: ObjectId("637fa78b5a4
 
 **⚠️ Best Approach: Refrence documents;** because we need the latest version of data.
 
+## Merging Related Documents Split Up Using Refrences
 
+### lookup()
+
+<img width="446" alt="Screenshot 2022-11-24 184628" src="https://user-images.githubusercontent.com/77200870/203842748-03263640-1fd2-4e2e-b573-c0661b0e40ec.png">
+
+**Authors**
+
+```js
+{
+    _id: ObjectId("637fab1d5a49faf9d87c5c65"),
+    name: 'robert',
+    age: 30,
+    address: { street: 'main', state: 'TX' }
+  },
+  {
+    _id: ObjectId("637fab1d5a49faf9d87c5c66"),
+    name: 'fellip',
+    age: 40,
+    address: { street: 'main-str', state: 'NY' }
+  }
+```
+
+**Books**
+
+```js
+{
+    _id: ObjectId("637faab45a49faf9d87c5c64"),
+    title: 'cipher',
+    authors: [
+      ObjectId("637fab1d5a49faf9d87c5c65"),
+      ObjectId("637fab1d5a49faf9d87c5c66")
+    ]
+}
+```
+
+**Merging**
+
+```js
+db.books.aggregate([
+    {$lookup: {
+                from: "authors", 
+                localField: "authors", 
+                foreignField: "_id", 
+                as: "creators"
+               }
+    }])
+```
+
+**Result**
+
+```js
+{
+    _id: ObjectId("637faab45a49faf9d87c5c64"),
+    title: 'cipher',
+    authors: [
+      ObjectId("637fab1d5a49faf9d87c5c65"),
+      ObjectId("637fab1d5a49faf9d87c5c66")
+    ],
+    creators: [
+      {
+        _id: ObjectId("637fab1d5a49faf9d87c5c66"),
+        name: 'fellip',
+        age: 40,
+        address: { street: 'main-str', state: 'NY' }
+      },
+      {
+        _id: ObjectId("637fab1d5a49faf9d87c5c65"),
+        name: 'robert',
+        age: 30,
+        address: { street: 'main', state: 'TX' }
+      }
+    ]
+}
+```
