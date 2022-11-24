@@ -312,9 +312,38 @@ db.company.insertOne({name: "Fresh Apples Inc", isStartup: true, employeesCount:
 
 <img width="503" alt="Screenshot 2022-11-23 221144" src="https://user-images.githubusercontent.com/77200870/203646882-8e53f3cf-bc9f-402d-badd-3fc6111b83d2.png">
 
+#### Example #2: One To Many Relashion
 
+<img width="488" alt="Screenshot 2022-11-24 180954" src="https://user-images.githubusercontent.com/77200870/203837620-596d5a1d-4c57-478c-937f-b115b3d570ee.png">
 
+**⚠️ Best Approach: Embedded refrenced document;** because we never fetch the answers alone without the thread, the thread always comes along with the answers.
 
+#### Example #3: One To Many Relashion
 
+<img width="482" alt="Screenshot 2022-11-24 181204" src="https://user-images.githubusercontent.com/77200870/203837934-2e1b1be9-1470-44bc-8a59-9813c59c4f1f.png">
+
+**⚠️ Best Approach: Refrence documents;** because if we just want to fetch the cities for example we will not need to fetch all the citizens as well which can be a lot of data over the wire. So we just refrence the city for each citizen.
+
+```js
+db.cities.insertOne({name: "Baverlley", coor: {lat: 23, lng: 55}})
+```
+
+```js
+db.citizens.insertMany([{name: "oussama", age: 20, cityId: ObjectId("637fa78b5a49faf9d87c5c61")}, {name: "yakoub", age: 25, cityId: ObjectId("637fa78b5a49faf9d87c5c61")}])
+```
+
+#### Example #4: Many To One Relashion
+
+> Typically we model many-to-many relashions by refrences
+
+> But, we should first ask, how often do we change our data, and when we change it do we have to change it everywhere.
+
+<img width="483" alt="Screenshot 2022-11-24 182149" src="https://user-images.githubusercontent.com/77200870/203839356-36a6bd60-682e-475f-a716-8b761b46d732.png">
+
+**⚠️ Best Approach: Either works;** because we don't need to have the latest version of the products in the `orders` array inside the `customer` document.
+
+<img width="487" alt="Screenshot 2022-11-24 183027" src="https://user-images.githubusercontent.com/77200870/203840638-e07eef9d-fa7a-4df5-bbe9-c85e4e188125.png">
+
+**⚠️ Best Approach: Refrence documents;** because we need the latest version of data.
 
 
