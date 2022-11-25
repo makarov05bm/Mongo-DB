@@ -588,3 +588,59 @@ To get all the commands we can run on the database object
 To get all the commands we can run on a collection
 
 > db.test.help()
+
+--------------------------------------------------------------------
+
+# [05] Diving Deeper Into Document Creation
+
+<img width="243" alt="Screenshot 2022-11-25 213053" src="https://user-images.githubusercontent.com/77200870/204052730-27b7be7f-ece6-4ca1-bafd-92024c372124.png">
+
+## Creating Documents
+
+<img width="526" alt="Screenshot 2022-11-25 213147" src="https://user-images.githubusercontent.com/77200870/204052785-e20a2a69-b620-4869-96ca-56a162cf0dad.png">
+
+⚠️ insert() works with one document or an array of documents but it's prone to errors, and makes it hard to understand what's going in the code
+
+<img width="523" alt="Screenshot 2022-11-25 213301" src="https://user-images.githubusercontent.com/77200870/204052885-48429369-b4e0-4de6-9909-5e43a2927d3c.png">
+
+## Working With Ordered Inserts
+
+When inserting multiple documents into the collection with `insertMany`, we can set an option which determines whether we continue inserting after a document fails to get inserted or not
+
+> ordered: true        DON'T CONTINUE
+> ordered: false       CONTINUE
+
+```js
+db.hobbies.insertMany([{ _id: "yoga", name: "Yoga" }, { _id: "cooking", name: "cooking" }, { _id: "food", name: "Food" }], {ordered: false})
+```
+
+## WriteConcern Option
+
+<img width="533" alt="Screenshot 2022-11-25 215554" src="https://user-images.githubusercontent.com/77200870/204054542-4c2d0a5a-6560-4650-97ed-3f7c60a38017.png">
+
+⚠️ `writeConcern` works for all insert, delete and update methods
+
+**Syntax:** 
+
+```js
+{ w: <value>, j: <boolean>, wtimeout: <number> }
+```
+
+**Example:**
+```js
+db.persons.insertOne({name: "susan", age: 25}, {writeConcern: {w: 1, j: true, wtimeout: 200}})
+```
+
+## Atomicity
+
+<img width="491" alt="Screenshot 2022-11-25 221232" src="https://user-images.githubusercontent.com/77200870/204055760-b58f10c7-6e5d-46b0-bfa5-798caebfc335.png">
+
+## Importing Data
+
+- jsonArray: we are importing an array of documents, not just one document
+- drop: if a collection with this name already exists, then delete it and replace it with this new one
+
+```js
+mongoimport path_to_json_file -d movieDB -c movies --jsonArray --drop
+```
+
