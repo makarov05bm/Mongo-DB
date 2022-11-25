@@ -534,3 +534,50 @@ db.runCommand({
 
 <img width="530" alt="Screenshot 2022-11-24 215017" src="https://user-images.githubusercontent.com/77200870/203861172-50b2b1e7-291d-4074-b3bd-1058909be771.png">
 
+----------------------------------------------------------------------------
+
+# [04] The Shell & The Server
+
+### What's inside this module?
+
+- Start mongoDB server as a process or as a service
+- Configuring database & log path (and mode)
+- Fixing issues
+
+## Server Configuration
+
+> mongod --help
+
+Change the path where the database files are saved
+
+> mongod --dbpath path
+
+Set the logs file
+
+> mongod --logpath path/logs.log
+
+Run the `mongod` server as a background process (works only on mac and linux)
+
+> mongod --fork --logpath path
+
+⚠️ For Windows, when we install the `mongod` server, the service is already running, to stop it we go to the task manager and end the service `MongoDB` or we run on the cmd as admin the command `net stop MongoDB` or we start `mongo` and run the command `db.shutdownServer()`, to start it again, we run the cmd as admin and run `net start MongoDB`
+
+<br/>
+
+> To add a configuration file for our settings, we go to bin and create a file `conf.cfg`
+
+```js
+systemLog:
+    destination: file
+    logAppend: true
+    path: "C:\Program Files\MongoDB\Server\6.0\log\mongod.log"
+storage:
+    dbPath: "C:\Program Files\MongoDB\Server\6.0\data"
+```
+
+To use it
+
+> mongod -f conf_path
+
+## Shell Configuration
+
