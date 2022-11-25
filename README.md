@@ -581,3 +581,10 @@ To use it
 
 ## Shell Configuration
 
+To get all the commands we can run on the database object
+
+> db.help()
+
+To get all the commands we can run on a collection
+
+> db.test.help()
