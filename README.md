@@ -644,3 +644,73 @@ db.persons.insertOne({name: "susan", age: 25}, {writeConcern: {w: 1, j: true, wt
 mongoimport path_to_json_file -d movieDB -c movies --jsonArray --drop
 ```
 
+## Read Operations
+
+- Methods, Filters & Operators
+- Query Selectors
+- Projection Operations
+
+### Query Selectors
+
+#### [01] Comparision Operators
+
+- $eq : equal
+- $ne : not equal
+- $lt : lower than
+- $lte: lower than or equal
+- $gt : greater than
+- $gte : greater than or equal
+- $in : find the matching documents where the field is in the specified array `db.movies.find({runtime: {$in: [30, 42]}})`
+- $nin : find the matching documents where the field is not in the specified array
+
+#### [02] Querying Embedded Fields
+
+```js
+db.movies.find({"rating.average": {$gt: 9}})
+```
+
+> we can go deep in the embedding level as much as we want
+
+#### [03] Querying Arrays
+
+```js
+db.movies.find({genres: "Drama"})
+```
+
+> This means that "Drama" is included in the `genres` array
+
+⚠️ For exactly matching an array, we add the []
+
+```js
+db.movies.find({genres: ["Drama"]})
+```
+
+#### [04] Logical Operators
+
+- $or : `db.movies.find({$or: [{"rating.average": {$lt: 5}}, {"rating.average": {$gt: 9.3}}]})`
+- $nor : neither of the conditions is met
+- $and : `db.movies.find({$and: [{"rating.average": {$gt: 9}}, {genres: "Drama"}]})`
+
+> The default behavior for find(...) is that it takes a bunch or filters and AND them, so why we have an `$and` operator
+
+> We have it because if we want to do something like this `db.movies.find({genres: "Drama", genres: "Thrilling"})` we will get only the arrays that have 'Thrilling', the solution here is to use `$and` >> `db.movies.find({$and: [{genres: "Drama"}, {genres: "Thrilling"}]})`
+
+- $not : look for the opposite or a query, `db.movies.find({runtime: {$not: {$eq: 60}}})`
+
+#### [05] Element Operators
+
+- $exists : check if a field exists >> `db.movies.find({age: {$exists: true}})`
+
+	> Sometimes there are documents where the field exists but it's set to `null`, to bypass this >> `db.movies.find({age: {$exists: true, $ne: null}})`
+
+- $type : the type of the field value >> `db.users.find({phone: {$type: "number"}})`
+
+	> We can also pass an array of types to check any of them
+
+	`db.users.find({phone: {$type: ["number", "string"]}})`
+
+#### [06] Evaluation Operators
+
+- $regex : look for a pattern in a text >> `db.movies.find({summary: {$regex: /musical/}})`
+- $expr : 
+
