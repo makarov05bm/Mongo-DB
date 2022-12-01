@@ -765,3 +765,14 @@ The following operation uses the `$all` operator to query the inventory collecti
 db.inventory.find( { tags: { $all: [ "appliance", "school", "book" ] } } )
 ```
 
+- **$elemMatch**
+
+<img width="620" alt="Screenshot 2022-12-01 224533" src="https://user-images.githubusercontent.com/77200870/205165599-cafec8c2-d37d-4347-a375-3cfc0d88f3d1.png">
+
+<img width="626" alt="Screenshot 2022-12-01 225543" src="https://user-images.githubusercontent.com/77200870/205167533-de8dd876-8b0a-4b6d-9ee6-8c7e4370b4f4.png">
+
+<img width="608" alt="Screenshot 2022-12-01 225558" src="https://user-images.githubusercontent.com/77200870/205167557-ed926922-a593-490c-9042-88030b24eeee.png">
+
+<img width="617" alt="Screenshot 2022-12-01 225804" src="https://user-images.githubusercontent.com/77200870/205167745-265234be-9bb1-4934-a69f-82bee4aaf606.png">
+
+<img width="602" alt="Screenshot 2022-12-01 225829" src="https://user-images.githubusercontent.com/77200870/205167753-188c8ed0-68b7-43c8-8ab4-d2d7b1baa6b9.png">
