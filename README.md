@@ -712,5 +712,56 @@ db.movies.find({genres: ["Drama"]})
 #### [06] Evaluation Operators
 
 - $regex : look for a pattern in a text >> `db.movies.find({summary: {$regex: /musical/}})`
-- $expr : 
+- $expr : compare two fields inside one document
+- 
+<img width="607" alt="Screenshot 2022-12-01 182912" src="https://user-images.githubusercontent.com/77200870/205120444-e4069eb0-b0e9-4a3c-8649-5c0174c08912.png">
+
+```js
+db.sales.find({$expr: {$gt: ["$volume", "$target"]}})
+```
+
+```js
+db.sales.find({$expr: {$gt: [{$cond: {if: {$gte: ["$volume", 190]}, then: {$subtract: ["$volume", 10]}, else: "$volume"}}, "$target"]}})
+```
+
+```js
+
+let discountedPrice = {
+   $cond: {
+      if: { $gte: ["$qty", 100] },
+      then: { $multiply: ["$price", NumberDecimal("0.50")] },
+      else: { $multiply: ["$price", NumberDecimal("0.75")] }
+   }
+};
+// Query the supplies collection using the aggregation expression
+db.supplies.find( { $expr: { $lt:[ discountedPrice,  NumberDecimal("5") ] } });
+```
+
+**⚠️ Note: Even though $cond calculates an effective discounted price, that price is not reflected in the returned documents. Instead, the returned documents represent the matching documents in their original state.**
+
+#### [07] Querying Arrays
+
+We use `nested path syntax`
+
+```js
+db.users.find({"hobbies.title": "sports"})
+```
+
+#### [08] Array Query Selectors
+
+- **$size:** matches any array with the number of elements specified by the argument (must be an exact number, we cannot pass a range of numbers or use `$gt`, `$lt`...)
+
+```js
+db.users.find({hobbies: {$size: 3}})
+```
+
+- **$all**
+
+<img width="614" alt="Screenshot 2022-12-01 190503" src="https://user-images.githubusercontent.com/77200870/205127588-2c775ecd-74b1-4ac2-94e6-ac665711124a.png">
+
+The following operation uses the `$all` operator to query the inventory collection for documents where the value of the tags field is an array whose elements include `appliance`, `school`, and `book`
+ 
+```js
+db.inventory.find( { tags: { $all: [ "appliance", "school", "book" ] } } )
+```
 
