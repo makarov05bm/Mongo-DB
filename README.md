@@ -776,3 +776,36 @@ db.inventory.find( { tags: { $all: [ "appliance", "school", "book" ] } } )
 <img width="617" alt="Screenshot 2022-12-01 225804" src="https://user-images.githubusercontent.com/77200870/205167745-265234be-9bb1-4934-a69f-82bee4aaf606.png">
 
 <img width="602" alt="Screenshot 2022-12-01 225829" src="https://user-images.githubusercontent.com/77200870/205167753-188c8ed0-68b7-43c8-8ab4-d2d7b1baa6b9.png">
+
+#### [07] Cursors
+
+<img width="538" alt="Screenshot 2022-12-02 212339" src="https://user-images.githubusercontent.com/77200870/205379642-bc4031df-f4b8-4974-b532-9624dc54462e.png">
+
+> The query `db.users.find()` returs a cursor
+
+- If we want to fetch all the documents at one time: `db.users.find().forEach(user => printjson(user))` or `db.users.find().toArray()`
+- If we want to fetch the next document: `db.users.find().next()` 
+- Skip the next document: `db.users.find().skip()`
+- Check if there is a document in the next position: `db.users.find().hasNext()`
+
+**Sorting cursor's documents**
+
+<img width="581" alt="Screenshot 2022-12-02 214516" src="https://user-images.githubusercontent.com/77200870/205383116-e97eeccb-ed33-420c-8ad2-287877268430.png">
+
+**⚠️ You can sort on a maximum of 32 keys**
+
+- 1 : ascending
+- -1 : descending
+
+```js
+db.movies.find().sort({"rating.average": -1})
+```
+
+**⚠️ but what if we have multiple documents with a duplicate rating.average field value? This will cause the query to return diffrent order across multiple executions of the same sort**
+
+> Then, we must specify another sorting criteria
+
+```js
+db.movies.find().sort({"rating.average: 1, runtime: -1"})
+```
+
