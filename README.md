@@ -848,6 +848,11 @@ db.movies.find({"rating.average": {$gt: 9}}, {genres: {$elemMatch: {$eq: "Horror
 
 - $slice: The`$slice` projection operator specifies the number of elements in an array to return in the query result.
 
-> $slice: <number>
+> $slice: `<number>`
 
-> $slice: [ <number to skip>, <number to return> ]
+> $slice: `[ <number to skip>, <number to return> ]`
+
+```js
+db.movies.find({"rating.average": {$gt: 9}}, {genres: {$slice: [1, 2]}, name: 1})
+db.movies.find({"rating.average": {$gt: 9}}, {genres: {$slice: 2}, name: 1})
+```
