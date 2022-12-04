@@ -809,3 +809,45 @@ db.movies.find().sort({"rating.average": -1})
 db.movies.find().sort({"rating.average: 1, runtime: -1"})
 ```
 
+**Skipping and limiting cursor's documents**
+
+<img width="467" alt="Screenshot 2022-12-04 214536" src="https://user-images.githubusercontent.com/77200870/205514613-6a9c43e8-c526-40d8-9078-782017aa33d4.png">
+
+<img width="485" alt="Screenshot 2022-12-04 214635" src="https://user-images.githubusercontent.com/77200870/205514661-a792fdae-0c76-4224-9075-97aa37297f2e.png">
+
+```js
+function printStudents(pageNumber, nPerPage) {
+  print( "Page: " + pageNumber );
+  db.students.find()
+             .sort( { _id: 1 } )
+             .skip( pageNumber > 0 ? ( ( pageNumber - 1 ) * nPerPage ) : 0 )
+             .limit( nPerPage )
+             .forEach( student => {
+               print( student.name );
+             } );
+}
+```
+
+#### [08] Projection
+
+```js
+db.movies.find({}, {name: 1, genres: 1, runtime: 1, rating: 1, _id: 0})
+```
+
+**Project embeded documents**
+
+```js
+db.movies.find({}, {name: 1, genres: 1, runtime: 1, "schedule.time": 1, _id: 0})
+```
+
+**Projection with arrays**
+
+```js
+db.movies.find({"rating.average": {$gt: 9}}, {genres: {$elemMatch: {$eq: "Horror"}}})
+```
+
+- $slice: The`$slice` projection operator specifies the number of elements in an array to return in the query result.
+
+> $slice: <number>
+
+> $slice: [ <number to skip>, <number to return> ]
