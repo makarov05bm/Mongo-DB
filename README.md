@@ -898,7 +898,7 @@ db.students3.updateMany({}, {$set: {"grades.$[element].std": 10}}, {arrayFilters
 
 - $push: appends a specified value to an array.
 
-> { $push: { <field1>: <value1>, ... } }
+> `{ $push: { <field1>: <value1>, ... } }`
 
 <img width="625" alt="Screenshot 2022-12-05 215954" src="https://user-images.githubusercontent.com/77200870/205741733-5bff0767-2bdc-4d03-be78-be873b0813fd.png">
 
