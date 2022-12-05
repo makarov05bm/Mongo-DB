@@ -856,3 +856,101 @@ db.movies.find({"rating.average": {$gt: 9}}, {genres: {$elemMatch: {$eq: "Horror
 db.movies.find({"rating.average": {$gt: 9}}, {genres: {$slice: [1, 2]}, name: 1})
 db.movies.find({"rating.average": {$gt: 9}}, {genres: {$slice: 2}, name: 1})
 ```
+
+## Update Operations
+
+https://www.mongodb.com/docs/manual/reference/operator/update/positional-filtered/#mongodb-update-up.---identifier--
+
+- `$` positional operator for update operations
+- `$[]` all positional operator for update operations
+- `$[<identifier>]` filtered positional operator for update operations
+
+
+**[+] upsert: An option for update operations; e.g. db.collection.updateOne(), db.collection.findAndModify(). If set to true, the update operation will either update the document(s) matched by the specified query or if no documents match, insert a new document. The new document will have the fields indicated in the operation**
+
+### [01] Update matched array element
+
+```js
+db.users.updateMany({hobbies: {$elemMatch: {title: "sports", frequency: {$gte: 3}}}}, {$set: {"hobbies.$.highFrequency": true}})
+```
+
+### [02] Update multiple matching array elements
+
+```js
+ db.users.updateMany({age: {$gt: 19}}, {$inc: {"hobbies.$[].frequency": -1}})
+```
+
+### [03] Update exact matched array element
+
+```js
+db.users.updateMany({"hobbies.frequency": {$lte: 1}}, {$set: {"hobbies.$[element].done": true}}, {arrayFilters: [{"element.frequency": {$lt: 1}}]})
+```
+
+### [04] Update All Array Elements that Match Multiple Conditions
+
+> Same arrayFilter document
+
+```js
+db.students3.updateMany({}, {$set: {"grades.$[element].std": 10}}, {arrayFilters: [{"element.grade": {$gte: 80}, "element.std": {$gte: 5}}]})
+```
+
+### [05] Adding elements to arrays
+
+- $push: appends a specified value to an array.
+
+> { $push: { <field1>: <value1>, ... } }
+
+<img width="625" alt="Screenshot 2022-12-05 215954" src="https://user-images.githubusercontent.com/77200870/205741733-5bff0767-2bdc-4d03-be78-be873b0813fd.png">
+
+<img width="581" alt="Screenshot 2022-12-05 220133" src="https://user-images.githubusercontent.com/77200870/205741939-18637c99-e883-4112-8eb6-8ecad2893fc9.png">
+
+#### Append a Value to an Array
+
+```js
+db.students.updateOne(
+   { _id: 1 },
+   { $push: { scores: 89 } }
+)
+```
+
+#### Append a Value to Arrays in Multiple Documents
+
+```js
+db.students.updateMany(
+   { },
+   { $push: { scores: 95 } }
+)
+```
+
+#### Append Multiple Values to an Array
+
+```js
+db.students.updateOne(
+   { name: "joe" },
+   { $push: { scores: { $each: [ 90, 92, 85 ] } } }
+)
+```
+
+#### Use `$push` Operator with Multiple Modifiers
+
+The following `$push` operation uses:
+
+- the `$each` modifier to add multiple documents to the quizzes array
+
+- the `$sort` modifier to sort all the elements of the modified quizzes array by the score field in descending order
+
+- the `$slice` modifier to keep only the first three sorted elements of the quizzes array
+
+```js
+db.students.updateOne(
+   { _id: 5 },
+   {
+     $push: {
+       quizzes: {
+          $each: [ { wk: 5, score: 8 }, { wk: 6, score: 7 }, { wk: 7, score: 6 } ],
+          $sort: { score: -1 },
+          $slice: 3
+       }
+     }
+   }
+```
