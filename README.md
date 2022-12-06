@@ -913,6 +913,12 @@ db.students.updateOne(
 )
 ```
 
+#### Append a Value to an array but make it unique
+
+```js
+db.users.updateOne({name: 'Maria'}, {$addToSet: {hobbies: {title: "hiking", frequency: 2}}})
+```
+
 #### Append a Value to Arrays in Multiple Documents
 
 ```js
@@ -954,3 +960,40 @@ db.students.updateOne(
      }
    }
 ```
+
+### [06] Deleting elements from arrays
+
+- $pull: removes from an existing array all instances of a value or values that match a specified condition.
+
+<img width="576" alt="Screenshot 2022-12-06 221608" src="https://user-images.githubusercontent.com/77200870/206024748-3a92d671-55db-459f-be1b-6838aa1eca6c.png">
+
+```js
+db.stores.insertMany( [
+   {
+      _id: 1,
+      fruits: [ "apples", "pears", "oranges", "grapes", "bananas" ],
+      vegetables: [ "carrots", "celery", "squash", "carrots" ]
+   },
+   {
+      _id: 2,
+      fruits: [ "plums", "kiwis", "oranges", "bananas", "apples" ],
+      vegetables: [ "broccoli", "zucchini", "carrots", "onions" ]
+   }
+] )
+```
+
+#### Remove All Items That Equal a Specified Value
+
+```js
+db.stores.updateMany(
+    { },
+    { $pull: { fruits: { $in: [ "apples", "oranges" ] }, vegetables: "carrots" } }
+)
+```
+
+#### Remove last or first element of an array
+
+```js
+db.stores.updateOne({_id: 2}, {$pop: {fruits: 1}})
+```
+
