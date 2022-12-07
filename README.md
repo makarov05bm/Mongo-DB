@@ -999,7 +999,76 @@ db.stores.updateOne({_id: 2}, {$pop: {fruits: 1}})
 
 --------------------------------------------------------------------------------
 
-# [07]
+# [07] Working With Indexes
 
+## What are indexes?
 
+> Indexes drastically speed up queries
 
+<img width="543" alt="Screenshot 2022-12-07 103211" src="https://user-images.githubusercontent.com/77200870/206142449-258715fe-1844-4113-80f1-7707d284f4b3.png">
+
+**⚠️ Don't use too many indexes**
+
+<img width="537" alt="Screenshot 2022-12-07 103442" src="https://user-images.githubusercontent.com/77200870/206142502-2b4f9fc6-f029-45ce-bd1a-03b5845285e8.png">
+
+### explain()
+
+<img width="584" alt="Screenshot 2022-12-07 104630" src="https://user-images.githubusercontent.com/77200870/206145081-ac38e8ac-ce5a-4b70-8cfd-d9255f15a966.png">
+
+```js
+db.contacts.explain('executionStats').find({"dob.age": {$gt: 60}})
+```
+
+### Create Indexes
+
+- 1: sort the list of index list in a descending order
+- -1: sort the list of index list in a ascending order
+
+```js
+db.contacts.createIndex({'dob.age': 1})
+```
+
+<br/>
+
+#### What does createIndex() do in detail?
+
+Whilst we can't really see the index, you can think of the index as a simple list of values + pointers to the original document. <br/>
+
+Something like this (for the "age" field):<br/>
+
+(29, "address in memory/ collection a1")<br/>
+
+(30, "address in memory/ collection a2")<br/>
+
+(33, "address in memory/ collection a3")<br/>
+
+The documents in the collection would be at the "addresses" a1, a2 and a3. The order does not have to match the order in the index (and most likely, it indeed won't).<br/>
+
+The important thing is that the index items are ordered (ascending or descending - depending on how you created the index). createIndex({age: 1}) creates an index with ascending sorting, createIndex({age: -1}) creates one with descending sorting.
+<br/>
+MongoDB is now able to quickly find a fitting document when you filter for its age as it has a sorted list. Sorted lists are way quicker to search because you can skip entire ranges (and don't have to look at every single document).
+<br/>
+Additionally, sorting (via sort(...)) will also be sped up because you already have a sorted list. Of course this is only true when sorting for the age.
+<br/>
+
+### Delete Indexes
+
+```js
+db.contacts.dropIndex({"dob.age": 1})
+```
+
+**⚠️ If we have queries that retrieve all the documents or almost all of them then indexes will slow down the query instead of speeding it up**
+
+### Compound Indexes
+
+> speed up queries that use multiple fields to retrive documents
+
+```js
+db.contacts.createIndex({"dob.age": 1, gender: 1})
+```
+
+> This will sort the `gender` field within the `dob.age` field
+
+> So we can use the index to find documents by the left field (age) ot both (age and gender), but we can't find documents by the `gender` only
+
+**⚠️ If we run a find query using only `gender`, mongoDB will do a `COLLSCAN` and not a `IXSCAN`**
