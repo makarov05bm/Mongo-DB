@@ -1126,3 +1126,70 @@ db.restaurants.createIndex(
 
 <img width="490" alt="Screenshot 2022-12-10 142013" src="https://user-images.githubusercontent.com/77200870/206857291-f9aba7e2-b129-4cb1-b45c-7207373a12c3.png">
 
+#### Special case for unique and partialIndexExpression
+
+When we add an index and it's unique, if we add new documents where that field is "null" then we will get an error because "non-existing" fields are unique themselves.
+
+> **Solution:** using `partialIndexExpression`
+
+```mongoDB
+db.users.createIndex({email: 1}, {unique: true, partialIndexExpression: {email: {$exists: true}}})
+```
+
+> This means that we use this index only when the `email` field is present
+
+### Time-To-Live (TTL) indexes
+
+> This document provides an introduction to MongoDB's "time to live" or `TTL` collection feature. `TTL` collections make it possible to store data in MongoDB and have the mongod automatically remove data after a specified number of seconds or at a specific clock time.
+
+> Data expiration is useful for some classes of information, including machine generated event data, logs, and session information that only need to persist for a limited period of time.
+
+```mongoDb
+db.sessions.createIndex({createdAt: 1}, {expireAfterSeconds: 10})
+```
+
+<img width="487" alt="Screenshot 2022-12-10 145400" src="https://user-images.githubusercontent.com/77200870/206858781-f73652a2-4cea-4ae2-9485-8042824c3c69.png">
+
+**⚠️ You can modify the expireAfterSeconds of an existing TTL index using the collMod command.**
+
+**⚠️ If the field contains an array of BSON date-typed objects, data expires if at least one of BSON date-typed object is older than the number of seconds specified in `expireAfterSeconds`.**
+
+**⚠️ Do not set expireAfterSeconds to NaN in your TTL index configuration.**
+
+#### Identify misconfigured indexes.
+
+```js
+function getNaNIndexes() {
+  const nan_index = [];
+
+  const dbs = db.adminCommand({ listDatabases: 1 }).databases;
+
+  dbs.forEach((d) => {
+    const listCollCursor = db
+      .getSiblingDB(d.name)
+      .runCommand({ listCollections: 1 }).cursor;
+
+    const collDetails = {
+      db: listCollCursor.ns.split(".$cmd")[0],
+      colls: listCollCursor.firstBatch.map((c) => c.name),
+    };
+
+    collDetails.colls.forEach((c) =>
+      db
+        .getSiblingDB(collDetails.db)
+        .getCollection(c)
+        .getIndexes()
+        .forEach((entry) => {
+          if (Object.is(entry.expireAfterSeconds, NaN)) {
+            nan_index.push({ ns: `${collDetails.db}.${c}`, index: entry });
+          }
+        })
+    );
+  });
+
+  return nan_index;
+};
+
+getNaNIndexes();
+```
+
