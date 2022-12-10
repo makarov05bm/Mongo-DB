@@ -1072,3 +1072,57 @@ db.contacts.createIndex({"dob.age": 1, gender: 1})
 > So we can use the index to find documents by the left field (age) ot both (age and gender), but we can't find documents by the `gender` only
 
 **⚠️ If we run a find query using only `gender`, mongoDB will do a `COLLSCAN` and not a `IXSCAN`**
+
+### Using Indexes for sorting
+
+> When we have millions of documents and we want to sort them, the sort can not happen because mongoDB by default have 32mb memory, and when we sort, we first fetch all the documents, put them into memory and then sort, which is impossible for millions of documents.
+
+> **Solution:** using an index with the field we want to sort with.
+
+```js
+db.contacts.explain().find({"dob.age": 35}).sort({gender: 1})
+```
+
+### The default index
+
+> The default index uses: `_id`
+
+To get all indexes on a collection: `db.contacts.getIndexes()`
+
+### Configuring Indexes
+
+#### Unique Indexes
+
+```js
+db.contacts.createIndex({email: 1}, {unique: true})
+```
+
+#### Partial Filters
+
+Partial indexes only index the documents in a collection that meet a specified filter expression. By indexing a subset of the documents in a collection, partial indexes have lower storage requirements and reduced performance costs for index creation and maintenance.
+
+<br/>
+
+**Create a Partial Index**
+
+To create a partial index, use the `db.collection.createIndex()` method with the `partialFilterExpression` option. The `partialFilterExpression` option accepts a document that specifies the filter condition using:
+
+- equality expressions (i.e. field: value or using the `$eq` operator),
+- `$exists`: true expression,
+- `$gt`, `$gte`, `$lt`, `$lte` expressions,
+- `$type` expressions,
+- `$and` operator at the top-level only
+
+```mongoDB
+db.restaurants.createIndex(
+   { cuisine: 1, name: 1 },
+   { partialFilterExpression: { rating: { $gt: 5 } } }
+)
+```
+
+**Behavior**
+
+<img width="489" alt="Screenshot 2022-12-10 141957" src="https://user-images.githubusercontent.com/77200870/206857289-cd38ee20-79fc-4651-b52c-6272f9985e3e.png">
+
+<img width="490" alt="Screenshot 2022-12-10 142013" src="https://user-images.githubusercontent.com/77200870/206857291-f9aba7e2-b129-4cb1-b45c-7207373a12c3.png">
+
