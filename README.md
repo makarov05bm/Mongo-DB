@@ -1113,7 +1113,7 @@ To create a partial index, use the `db.collection.createIndex()` method with the
 - `$type` expressions,
 - `$and` operator at the top-level only
 
-```mongoDB
+```js
 db.restaurants.createIndex(
    { cuisine: 1, name: 1 },
    { partialFilterExpression: { rating: { $gt: 5 } } }
@@ -1132,7 +1132,7 @@ When we add an index and it's unique, if we add new documents where that field i
 
 > **Solution:** using `partialIndexExpression`
 
-```mongoDB
+```js
 db.users.createIndex({email: 1}, {unique: true, partialIndexExpression: {email: {$exists: true}}})
 ```
 
@@ -1144,7 +1144,7 @@ db.users.createIndex({email: 1}, {unique: true, partialIndexExpression: {email: 
 
 > Data expiration is useful for some classes of information, including machine generated event data, logs, and session information that only need to persist for a limited period of time.
 
-```mongoDb
+```js
 db.sessions.createIndex({createdAt: 1}, {expireAfterSeconds: 10})
 ```
 
@@ -1193,3 +1193,50 @@ function getNaNIndexes() {
 getNaNIndexes();
 ```
 
+### Query Diagnosis & Query Planning
+
+<img width="545" alt="Screenshot 2022-12-10 151310" src="https://user-images.githubusercontent.com/77200870/206859717-c025cc9d-6d7b-4d68-8fbf-ac7d351e4a34.png">
+
+<img width="526" alt="Screenshot 2022-12-10 151437" src="https://user-images.githubusercontent.com/77200870/206859721-a0b33286-2862-47e1-ad27-fa417bf868d3.png">
+
+#### Coverd Query
+
+A covered query is a query that can be satisfied entirely using an index and does not have to examine any documents. An index covers a query when all of the following apply:
+
+- all the fields in the query are part of an index.
+
+- all the fields returned in the results are in the same index.
+
+- no fields in the query are equal to `null` (i.e. `{"field" : null}` or `{"field" : {$eq : null}}`).
+
+**Example:**
+
+```js
+db.customers.createIndex({"name": 1})
+```
+
+```js
+db.customers.explain('executionStats').find({name: 'max'}, {_id: 0, name: 1})
+```
+
+**⚠️ For the specified index to cover the query, the projection document must explicitly specify `_id: 0` to exclude the _id field from the result since the index does not include the _id field.**
+
+**Covered Query in Embedded Documents:**
+
+For example, consider a collection `userdata` with documents of the following form:
+
+```js
+{ _id: 1, user: { login: "tester" } }
+```
+
+The collection has the following index:
+
+```js
+{ "user.login": 1 }
+```
+
+The `{ "user.login": 1 }` index will cover the query below:
+
+```js
+db.userdata.find( { "user.login": "tester" }, { "user.login": 1, _id: 0 } )
+```
