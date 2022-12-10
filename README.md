@@ -1221,6 +1221,8 @@ db.customers.explain('executionStats').find({name: 'max'}, {_id: 0, name: 1})
 
 **⚠️ For the specified index to cover the query, the projection document must explicitly specify `_id: 0` to exclude the _id field from the result since the index does not include the _id field.**
 
+**⚠️ When an index covers a query, the explain result has an IXSCAN stage that is not a descendant of a FETCH stage, and in the `executionStats`, the `explain.executionStats.totalDocsExamined` is 0.**
+
 **Covered Query in Embedded Documents:**
 
 For example, consider a collection `userdata` with documents of the following form:
