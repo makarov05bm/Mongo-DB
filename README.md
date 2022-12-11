@@ -1242,3 +1242,57 @@ The `{ "user.login": 1 }` index will cover the query below:
 ```js
 db.userdata.find( { "user.login": "tester" }, { "user.login": 1, _id: 0 } )
 ```
+
+#### How mongoDB rejects a plan
+
+<img width="464" alt="Screenshot 2022-12-11 113942" src="https://user-images.githubusercontent.com/77200870/206898985-f5de02bc-66ba-4c1e-9a65-ee5d3776aa45.png">
+
+<img width="545" alt="Screenshot 2022-12-11 114029" src="https://user-images.githubusercontent.com/77200870/206898988-8efcab67-37bd-4418-9585-70a54604452a.png">
+
+**⚠️ To get detailed statistics for all plans**
+
+```js
+db.customers.explain('allPlansExecution').find({age: 29, name: 'max'})
+```
+
+### Multi-Key Indexes
+
+To index a field that holds an array value, MongoDB creates an index key for each element in the array. These multikey indexes support efficient queries against array fields. Multikey indexes can be constructed over arrays that hold both scalar values [1] (e.g. strings, numbers) and nested documents.
+
+** [1] A scalar value refers to value that is neither an embedded document nor an array.**
+
+<img width="479" alt="Screenshot 2022-12-11 120018" src="https://user-images.githubusercontent.com/77200870/206899775-7da5abaf-7f9d-4ac0-838f-332e5a352956.png">
+
+<img width="494" alt="Screenshot 2022-12-11 120209" src="https://user-images.githubusercontent.com/77200870/206899850-18b8cefd-52bc-4e36-abd3-6c92778240c2.png">
+
+#### Limitations
+
+**Compound Multikey Indexes**
+
+For a compound multikey index, each indexed document can have at most one indexed field whose value is an array. That is:
+
+- You cannot create a compound multikey index if more than one to-be-indexed field of a document is an array. For example, consider a collection that contains the following document:
+```js
+{ _id: 1, a: [ 1, 2 ], b: [ 1, 2 ], category: "AB - both arrays" }
+```
+You cannot create a compound multikey index `{ a: 1, b: 1 }` on the collection since both the a and b fields are arrays.
+- Or, if a compound multikey index already exists, you cannot insert a document that would violate this restriction.
+Consider a collection that contains the following documents:
+```js
+{ _id: 1, a: [1, 2], b: 1, category: "A array" }
+{ _id: 2, a: 1, b: [1, 2], category: "B array" }
+```
+A compound multikey index `{ a: 1, b: 1 }` is permissible since for each document, only one field indexed by the compound multikey index is an array; i.e. no document contains array values for both `a` and `b` fields.
+However, after creating the compound multikey index, if you attempt to insert a document where both `a` and `b` fields are arrays, MongoDB will fail the insert.
+
+<br/>
+
+If a field is an array of documents, you can index the embedded fields to create a compound index. For example, consider a collection that contains the following documents:
+
+```js
+{ _id: 1, a: [ { x: 5, z: [ 1, 2 ] }, { z: [ 1, 2 ] } ] }
+{ _id: 2, a: [ { x: 5 }, { z: 4 } ] }
+```
+
+You can create a compound index on `{ "a.x": 1, "a.z": 1 }`. The restriction where at most one indexed field can be an array also applies.
+
