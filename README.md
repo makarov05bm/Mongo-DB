@@ -1296,3 +1296,74 @@ If a field is an array of documents, you can index the embedded fields to create
 
 You can create a compound index on `{ "a.x": 1, "a.z": 1 }`. The restriction where at most one indexed field can be an array also applies.
 
+<br/>
+
+### Text Indexes
+
+Text indexes can include any field whose value is a string or an array of string elements. A collection can only have one text search index, but that index can cover multiple fields.
+
+<img width="401" alt="Screenshot 2022-12-13 204500" src="https://user-images.githubusercontent.com/77200870/207429570-c307a482-1d2e-435c-9876-f2e0af64374c.png">
+
+> Only keywords are stored (is, the... don't get stored)
+
+> A collection can have at most one text index.
+
+<img width="492" alt="Screenshot 2022-12-13 205430" src="https://user-images.githubusercontent.com/77200870/207431123-6e94562b-a73c-4065-b382-5ccab85835b0.png">
+
+#### Use the Index Name to Drop a text Index
+
+Whether the text index has the default name or you specified a name for the text index, to drop the text index, pass the index name to the db.collection.dropIndex() method.
+
+<br/>
+
+For example, consider the index created by the following operation:
+
+```js
+db.collection.createIndex(
+   {
+     content: "text",
+   }
+)
+```
+
+```js
+db.collection.createIndex(
+   {
+     content: "text",
+     "users.comments": "text",
+     "users.profiles": "text"
+   },
+   {
+     name: "MyTextIndex"
+   }
+)
+```
+
+Then, to remove this text index, pass the name `"MyTextIndex"` to the `db.collection.dropIndex()` method, as in the following:
+
+```js
+db.collection.dropIndex("MyTextIndex")
+```
+
+#### Searching using the text index
+
+```js
+db.products.find({$text: {$search: "is"}})
+```
+
+#### Searching using the text index for a phrase
+
+```js
+db.products.find({$text: {$search: "\"awesome book\""}})
+```
+
+#### Text Indexes & Sorting
+
+**⚠️ We can search for two or three words at the same time and get back all the documents that include at least one of the words we searched for, then to sort them according to which is more accurate to the search criteria**
+
+```js
+db.products.find({$text: {$search: "awesome book"}}, {score: {$meta: "textScore"}}).sort({score: {$meta: "textScore"}})
+```
+
+- **textScore**: Returns the score associated with the corresponding $text query for each matching document. The text score signifies how well the document matched the search term or terms.
+
