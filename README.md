@@ -1308,6 +1308,8 @@ Text indexes can include any field whose value is a string or an array of string
 
 > A collection can have at most one text index.
 
+**⚠️ Text case does not matter**
+
 <img width="492" alt="Screenshot 2022-12-13 205430" src="https://user-images.githubusercontent.com/77200870/207431123-6e94562b-a73c-4065-b382-5ccab85835b0.png">
 
 #### Use the Index Name to Drop a text Index
